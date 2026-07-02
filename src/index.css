@@ -1,0 +1,115 @@
+@import 'tailwindcss';
+
+/* Map Tailwind color utilities to runtime CSS variables so they switch with
+   the active theme (set via [data-theme] on <html>). */
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Clash Display', 'Inter', system-ui, sans-serif;
+
+  --animate-caret: caret-blink 1s step-end infinite;
+  --animate-fly: fly 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+  @keyframes fly {
+    0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    35%  { transform: translate(180px, -160px) rotate(-35deg); opacity: 1; }
+    50%  { transform: translate(260px, -220px) rotate(-40deg); opacity: 0; }
+    51%  { transform: translate(-60px, 60px) rotate(20deg); opacity: 0; }
+    75%  { transform: translate(-20px, 20px) rotate(10deg); opacity: 0.6; }
+    100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  }
+
+  @keyframes caret-blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    50.01%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-pill-from: var(--pill-from);
+  --color-pill-to: var(--pill-to);
+  --color-cta-from: var(--cta-from);
+  --color-cta-to: var(--cta-to);
+  --color-cta-text: var(--cta-text);
+  --color-cta-line: var(--cta-line);
+}
+
+/* Light theme (default) */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --text: #3d3d3d;
+  --muted: #6e6e6e;
+  --line: #cfcfcf;
+  --line-soft: rgba(207, 207, 207, 0.69);
+
+  /* Pill controls (toggle, Resume) */
+  --pill-from: #ffffff;
+  --pill-to: #fefefe;
+  --pill-highlight: rgba(255, 255, 255, 0.1);
+
+  /* Primary CTA ("View my work") */
+  --cta-from: #000000;
+  --cta-to: #353030;
+  --cta-text: #ffffff;
+  --cta-line: rgba(255, 255, 255, 0.1);
+  --cta-highlight: rgba(255, 255, 255, 0.25);
+
+  --grid-filter: none;
+  --ghana-star: #000000;
+  --ghana-green: #006B3F;
+}
+
+/* Dark theme */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --surface: #0e0e11;
+  --surface-raised: #18181b;
+  --text: #ededed;
+  --muted: #9a9aa2;
+  --line: #2e2e33;
+  --line-soft: rgba(120, 120, 130, 0.35);
+
+  --pill-from: #1b1b1f;
+  --pill-to: #232328;
+  --pill-highlight: rgba(255, 255, 255, 0.06);
+
+  /* CTA inverts to a light button so it stays the prominent accent */
+  --cta-from: #ffffff;
+  --cta-to: #e9e9ec;
+  --cta-text: #18181b;
+  --cta-line: rgba(0, 0, 0, 0.08);
+  --cta-highlight: rgba(255, 255, 255, 0.8);
+
+  /* Lift the grid so its light strokes read on a dark surface */
+  --grid-filter: invert(1) brightness(1.4);
+  --ghana-star: #ffffff;
+  --ghana-green: #4ADE80;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
