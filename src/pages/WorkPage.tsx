@@ -188,11 +188,6 @@ export default function WorkPage() {
 
   const renderCard = (project: Project) => {
     const isModal = !!project.modal
-    const sharedProps = {
-      key: project.id,
-      onClick: isModal ? () => setOpenProject(project) : undefined,
-    }
-
     if (view === 'list') {
       const inner = (
         <div className="flex items-center gap-4 border-b border-line-soft py-4 transition-opacity hover:opacity-70">
