@@ -45,7 +45,7 @@ export const POSTS: Post[] = [
       {
         type: 'credit',
         name: 'Eyarko',
-        note: 'Enyarko had a message wall on his site. I loved the idea but went a different direction — the message bubble chat you see on the Say Hi page is my take on it.',
+        note: 'Eyarko had a message wall on his site. I loved the idea but went a different direction — the message bubble chat you see on the Say Hi page is my take on it.',
         url: 'https://eyarko.vercel.app/about',
       },
       {
