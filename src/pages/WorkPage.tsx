@@ -102,7 +102,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 p-4 sm:items-center"
+      className="fixed inset-x-0 bottom-0 top-[80px] z-[100] flex items-end justify-center bg-black/60 p-4 sm:items-center"
       onClick={onClose}
     >
       <div
@@ -185,7 +185,7 @@ export default function WorkPage() {
   const [openProject, setOpenProject] = useState<Project | null>(null)
 
   const filtered = active === 'all'
-    ? PROJECTS.filter(p => p.type !== 'exploration')
+    ? PROJECTS
     : active === 'exploration'
     ? PROJECTS.filter(p => p.type === 'exploration')
     : PROJECTS.filter(p => p.type === active.slice(0, -1) as 'project' | 'lab')
