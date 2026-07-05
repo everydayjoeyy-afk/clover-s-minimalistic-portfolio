@@ -102,7 +102,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 top-[80px] z-[100] flex items-end justify-center bg-black/60 p-4 sm:items-center"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 p-4 pt-[100px] sm:items-center sm:pt-4"
       onClick={onClose}
     >
       <div
@@ -110,28 +110,10 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         style={{ maxHeight: '85vh' }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Image / gradient header */}
-        <div className="relative h-[180px] w-full shrink-0 overflow-hidden">
-          {project.image ? (
-            <img src={project.image} alt={project.title} className="h-full w-full object-cover" />
-          ) : (
-            <div className="h-full w-full" style={{ background: project.gradient }} />
-          )}
-          {/* Close button */}
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-opacity hover:opacity-70"
-          >
-            <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4">
-              <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
-
         {/* Scrollable content */}
         <div className="overflow-y-auto p-6">
-          <div className="mb-4 flex items-start justify-between gap-4">
+          {/* Header row */}
+          <div className="mb-5 flex items-start justify-between gap-4">
             <div>
               <span className="mb-2 inline-block rounded-full border border-line px-2.5 py-0.5 text-[11px] font-medium text-muted">
                 {project.category}
@@ -140,16 +122,27 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
                 {project.title}
               </h2>
             </div>
-            {m.liveUrl && (
-              <a
-                href={m.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="shrink-0 rounded-[10px] bg-gradient-to-b from-cta-from to-cta-to px-4 py-2 text-[13px] font-semibold text-cta-text transition-transform active:scale-95"
+            <div className="flex shrink-0 items-center gap-2">
+              {m.liveUrl && (
+                <a
+                  href={m.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-[10px] bg-gradient-to-b from-cta-from to-cta-to px-4 py-2 text-[13px] font-semibold text-cta-text transition-transform active:scale-95"
+                >
+                  View live ↗
+                </a>
+              )}
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-surface text-muted transition-opacity hover:opacity-70"
               >
-                View live ↗
-              </a>
-            )}
+                <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4">
+                  <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div className="space-y-4">
