@@ -175,6 +175,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 
 export default function WorkPage() {
   const [active, setActive]           = useState<Tab>('all')
+  const [view, setView]               = useState<'grid' | 'list'>('grid')
   const [openProject, setOpenProject] = useState<Project | null>(null)
 
   const filtered = active === 'all'
@@ -183,103 +184,158 @@ export default function WorkPage() {
     ? PROJECTS.filter(p => p.type === 'exploration')
     : PROJECTS.filter(p => p.type === active.slice(0, -1) as 'project' | 'lab')
 
+  const pillBtn = 'flex h-[32px] w-[32px] items-center justify-center rounded-[10px] border transition-all duration-200'
+
+  const renderCard = (project: Project) => {
+    const isModal = !!project.modal
+    const sharedProps = {
+      key: project.id,
+      onClick: isModal ? () => setOpenProject(project) : undefined,
+    }
+
+    if (view === 'list') {
+      const inner = (
+        <div className="flex items-center gap-4 border-b border-line-soft py-4 transition-opacity hover:opacity-70">
+          {/* Thumbnail */}
+          <div className="relative h-[60px] w-[90px] shrink-0 overflow-hidden rounded-[10px]">
+            {project.image ? (
+              <img src={project.image} alt={project.title} className="h-full w-full object-cover" />
+            ) : (
+              <div className="h-full w-full" style={{ background: project.gradient }} />
+            )}
+          </div>
+          {/* Info */}
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <span className="text-[11px] font-medium text-muted">{project.category}</span>
+            <h2 className="font-display text-[16px] font-semibold leading-tight text-text">{project.title}</h2>
+            <p className="truncate text-[12px] text-muted">{project.description}</p>
+          </div>
+          {/* Arrow */}
+          <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 shrink-0 text-muted">
+            <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      )
+
+      return isModal ? (
+        <button key={project.id} type="button" onClick={() => setOpenProject(project)} className="w-full text-left">
+          {inner}
+        </button>
+      ) : (
+        <a key={project.id} href={project.url ?? '#'} target={project.url ? '_blank' : undefined} rel="noopener noreferrer">
+          {inner}
+        </a>
+      )
+    }
+
+    const cardInner = (
+      <>
+        <div className="relative h-[200px] w-full overflow-hidden">
+          {project.image ? (
+            <img src={project.image} alt={project.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
+          ) : (
+            <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110" style={{ background: project.gradient }} />
+          )}
+        </div>
+        <div className="flex flex-1 flex-col gap-2 p-5">
+          <span className="w-fit rounded-full border border-line px-2.5 py-0.5 text-[11px] font-medium text-muted">{project.category}</span>
+          <h2 className="relative w-fit font-display text-[18px] font-semibold leading-tight text-text">
+            {project.title}
+            <span className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-text transition-transform duration-300 ease-out group-hover:scale-x-100" />
+          </h2>
+          <p className="text-[13px] leading-[1.6] text-muted">{project.description}</p>
+          <div className="mt-1 flex items-center gap-1.5 transition-all duration-300 ease-out md:-translate-x-2 md:opacity-0 md:group-hover:translate-x-0 md:group-hover:opacity-100">
+            <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 text-text">
+              <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="text-[12px] font-medium text-text">View project</span>
+          </div>
+        </div>
+      </>
+    )
+
+    return isModal ? (
+      <button key={project.id} type="button" onClick={() => setOpenProject(project)} className="group flex flex-col overflow-hidden rounded-[16px] border border-line bg-surface-raised text-left transition-colors duration-300 hover:border-text/25">
+        {cardInner}
+      </button>
+    ) : (
+      <a key={project.id} href={project.url ?? '#'} target={project.url ? '_blank' : undefined} rel="noopener noreferrer" className="group flex flex-col overflow-hidden rounded-[16px] border border-line bg-surface-raised transition-colors duration-300 hover:border-text/25">
+        {cardInner}
+      </a>
+    )
+  }
+
   return (
     <main className="flex flex-1 flex-col items-center px-4 pt-8 pb-16">
       <div className="w-full max-w-[742px]">
 
         {/* Header */}
         <div className="mb-8">
-          <p className="mb-3 text-[13px] font-semibold uppercase tracking-widest text-text">
-            Work
-          </p>
+          <p className="mb-3 text-[13px] font-semibold uppercase tracking-widest text-text">Work</p>
           <p className="max-w-[480px] text-[15px] leading-[1.7] text-muted">
             I've tried many things. These are the ones I'm proud of — and a few labs I worked on while figuring UX out.
           </p>
         </div>
 
-        {/* Tabs */}
-        <div className="mb-8 flex flex-wrap gap-2">
-          {TABS.map(tab => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => setActive(tab.key)}
-              className={`rounded-[10px] border px-4 py-1.5 text-[13px] font-semibold transition-all duration-200 ${
-                active === tab.key
-                  ? 'border-text/20 bg-gradient-to-b from-cta-from to-cta-to text-cta-text'
-                  : 'border-line bg-surface-raised text-muted hover:text-text'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {filtered.map((project) => {
-            const isModal = !!project.modal
-
-            const cardInner = (
-              <>
-                {/* Visual area */}
-                <div className="relative h-[200px] w-full overflow-hidden">
-                  {project.image ? (
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-                    />
-                  ) : (
-                    <div
-                      className="absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-110"
-                      style={{ background: project.gradient }}
-                    />
-                  )}
-                </div>
-
-                {/* Info */}
-                <div className="flex flex-1 flex-col gap-2 p-5">
-                  <span className="w-fit rounded-full border border-line px-2.5 py-0.5 text-[11px] font-medium text-muted">
-                    {project.category}
-                  </span>
-                  <h2 className="relative w-fit font-display text-[18px] font-semibold leading-tight text-text">
-                    {project.title}
-                    <span className="absolute bottom-0 left-0 h-[1.5px] w-full origin-left scale-x-0 bg-text transition-transform duration-300 ease-out group-hover:scale-x-100" />
-                  </h2>
-                  <p className="text-[13px] leading-[1.6] text-muted">{project.description}</p>
-                  <div className="mt-1 flex items-center gap-1.5 transition-all duration-300 ease-out md:-translate-x-2 md:opacity-0 md:group-hover:translate-x-0 md:group-hover:opacity-100">
-                    <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 text-text">
-                      <path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    <span className="text-[12px] font-medium text-text">View project</span>
-                  </div>
-                </div>
-              </>
-            )
-
-            return isModal ? (
+        {/* Tabs + view toggle */}
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            {TABS.map(tab => (
               <button
-                key={project.id}
+                key={tab.key}
                 type="button"
-                onClick={() => setOpenProject(project)}
-                className="group flex flex-col overflow-hidden rounded-[16px] border border-line bg-surface-raised text-left transition-colors duration-300 hover:border-text/25"
+                onClick={() => setActive(tab.key)}
+                className={`rounded-[10px] border px-4 py-1.5 text-[13px] font-semibold transition-all duration-200 ${
+                  active === tab.key
+                    ? 'border-text/20 bg-gradient-to-b from-cta-from to-cta-to text-cta-text'
+                    : 'border-line bg-surface-raised text-muted hover:text-text'
+                }`}
               >
-                {cardInner}
+                {tab.label}
               </button>
-            ) : (
-              <a
-                key={project.id}
-                href={project.url ?? '#'}
-                target={project.url ? '_blank' : undefined}
-                rel="noopener noreferrer"
-                className="group flex flex-col overflow-hidden rounded-[16px] border border-line bg-surface-raised transition-colors duration-300 hover:border-text/25"
-              >
-                {cardInner}
-              </a>
-            )
-          })}
+            ))}
+          </div>
+
+          {/* View toggle */}
+          <div className="flex shrink-0 gap-1 rounded-[12px] border border-line bg-surface-raised p-1">
+            <button
+              type="button"
+              onClick={() => setView('grid')}
+              aria-label="Grid view"
+              className={`${pillBtn} ${view === 'grid' ? 'border-text/20 bg-gradient-to-b from-cta-from to-cta-to text-cta-text' : 'border-transparent text-muted hover:text-text'}`}
+            >
+              <svg viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5">
+                <rect x="1" y="1" width="6" height="6" rx="1.5" />
+                <rect x="9" y="1" width="6" height="6" rx="1.5" />
+                <rect x="1" y="9" width="6" height="6" rx="1.5" />
+                <rect x="9" y="9" width="6" height="6" rx="1.5" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => setView('list')}
+              aria-label="List view"
+              className={`${pillBtn} ${view === 'list' ? 'border-text/20 bg-gradient-to-b from-cta-from to-cta-to text-cta-text' : 'border-transparent text-muted hover:text-text'}`}
+            >
+              <svg viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5">
+                <rect x="1" y="2" width="14" height="2.5" rx="1" />
+                <rect x="1" y="6.75" width="14" height="2.5" rx="1" />
+                <rect x="1" y="11.5" width="14" height="2.5" rx="1" />
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {/* Projects */}
+        {view === 'grid' ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {filtered.map(renderCard)}
+          </div>
+        ) : (
+          <div className="flex flex-col">
+            {filtered.map(renderCard)}
+          </div>
+        )}
 
       </div>
 
