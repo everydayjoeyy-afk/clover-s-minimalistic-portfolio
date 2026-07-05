@@ -107,7 +107,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
     >
       <div
         className="relative flex w-full max-w-[600px] flex-col overflow-hidden rounded-[20px] border border-line bg-surface-raised"
-        style={{ maxHeight: '85vh' }}
+        style={{ maxHeight: '540px' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Scrollable content */}
